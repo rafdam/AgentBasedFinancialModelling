@@ -5,8 +5,7 @@ public class NetworkGenerator {
 private int agentCount; // number of agents in network
 private double density; // probability that k'th 'pair' of Agents will get a link between
 private boolean[][] similarityMatrix; // matrix desctribing if 2 agents are linked	
-private int[] linkedNeighbours;
-ArrayList<Agent> agentList;
+	ArrayList<Agent> agentList;
 	public NetworkGenerator(int N, double d) {
 		agentList = new ArrayList<Agent>();
 		for(int ii = 0 ; ii < N; ii++){
@@ -36,7 +35,6 @@ ArrayList<Agent> agentList;
 				}
 			}
 		}
-		linkedNeighbours = linkedNeighb;
 	}
 	
 	public ArrayList<Integer> getClasters(){
@@ -72,6 +70,7 @@ ArrayList<Agent> agentList;
 		}
 		return clasters;
 	}
+	/*// main for testing network generator
 	public static void main(String[] args){
 		System.out.println("Uruchomiony");
 		NetworkGenerator netGen = new NetworkGenerator(15, 0.005); // density must be close to 0 or whole network will be fully connected;
@@ -84,5 +83,6 @@ ArrayList<Agent> agentList;
 			System.out.println(clast);
 		}
 	}
+	*/
 }
 	
