@@ -1,9 +1,5 @@
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class MarketSimulator {
@@ -38,12 +34,13 @@ private ArrayList<Integer> clasters;
 					// do nothing, no market change, no buying, no selling
 				}
 			}
-			marketChange.add(Math.abs(oneJumpMarketChange));
+			marketChange.add(oneJumpMarketChange);
 		}
 		return marketChange;
 	}
+	
 	public static void main(String[] args){
-		NetworkGenerator netGen = new NetworkGenerator(1000); // density must be close to 0 or whole network will be fully connected
+		NetworkGenerator netGen = new NetworkGenerator(10000, 0.5); // density must be close to 0 or whole network will be fully connected
 		netGen.GenerateLinks();
 		for(int i = 0; i < 10; i ++){
 			String path = "output"+(i+1)+".txt";

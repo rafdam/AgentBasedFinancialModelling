@@ -6,13 +6,13 @@ private int agentCount; // number of agents in network
 private double density; // probability that k'th 'pair' of Agents will get a link between
 private boolean[][] similarityMatrix; // matrix desctribing if 2 agents are linked	
 	ArrayList<Agent> agentList;
-	public NetworkGenerator(int N) {
+	public NetworkGenerator(int N, double c) {
 		agentList = new ArrayList<Agent>();
 		for(int ii = 0 ; ii < N; ii++){
 			agentList.add(new Agent()); // initializing arrayList with agents
 		}
 		this.agentCount = N;
-		this.density = 1/N;
+		this.density = c/N;
 		this.similarityMatrix = new boolean[N][N];
 		
 	}
