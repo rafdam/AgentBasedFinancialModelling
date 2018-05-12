@@ -38,29 +38,31 @@ private ArrayList<Integer> clasters;
 					// do nothing, no market change, no buying, no selling
 				}
 			}
-			marketChange.add(oneJumpMarketChange);
+			marketChange.add(Math.abs(oneJumpMarketChange));
 		}
 		return marketChange;
 	}
 	public static void main(String[] args){
-		NetworkGenerator netGen = new NetworkGenerator(15, 0.005); // density must be close to 0 or whole network will be fully connected
+		NetworkGenerator netGen = new NetworkGenerator(1000); // density must be close to 0 or whole network will be fully connected
 		netGen.GenerateLinks();
-		ArrayList<Integer> clasters = netGen.getClasters();
-		MarketSimulator marSim = new MarketSimulator(0.15, clasters);
-		ArrayList<Integer> marChange = marSim.simulateMarket(50);
-		Path out = Paths.get("output.txt");
-		FileWriter writer;
-		try {
-			writer = new FileWriter("output.txt");
-			for(Integer inti : marChange){
-				writer.write(inti.toString() + "\n");
-				System.out.println(inti);
+		for(int i = 0; i < 10; i ++){
+			String path = "output"+(i+1)+".txt";
+			ArrayList<Integer> clasters = netGen.getClasters();
+			MarketSimulator marSim = new MarketSimulator(0.024*(i+1), clasters);
+			ArrayList<Integer> marChange = marSim.simulateMarket(1000);
+			FileWriter writer;
+			try {
+				writer = new FileWriter(path);
+				for(Integer inti : marChange){
+					writer.write(inti.toString() + "\n");
+				}
+				writer.close();
+			} catch (IOException e) {
+				System.out.println("Exception error");
+				e.printStackTrace();
 			}
-			writer.close();
-		} catch (IOException e) {
-			System.out.println("Exception error");
-			e.printStackTrace();
 		}
+		
 		
 		System.out.println("done");
 	}
