@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class NetworkGenerator {
 private int agentCount; // number of agents in network
@@ -18,19 +19,14 @@ private boolean[][] similarityMatrix; // matrix desctribing if 2 agents are link
 	}
 	
 	public void GenerateLinks(){
-		int[] linkedNeighb = new int[agentCount];
-		for(int zz = 0; zz < agentCount; zz++)	{linkedNeighb[zz] = agentCount;} // initializing the list with max value
-		for(int ii = 0 ; ii < agentCount; ii ++){
-			for(int jj = 0; jj < agentCount; jj ++){
+		for(int ii = 0 ; ii < agentCount-1; ii ++){
+			for(int jj = ii+1; jj < agentCount; jj ++){
 				if(similarityMatrix[ii][jj] == false){
 					if(Math.random() <= density){
 						similarityMatrix[ii][jj] = true;
 						similarityMatrix[jj][ii] = true;
-						linkedNeighb[ii] = jj;
-						linkedNeighb[jj] = ii;
 						agentList.get(ii).getLinkedAgentsList().add(jj);
 						agentList.get(jj).getLinkedAgentsList().add(ii);
-						//System.out.println("Agent: " + ii + " jest połączony z agentem: " + jj); //for testing purposes
 					}
 				}
 			}
@@ -68,9 +64,10 @@ private boolean[][] similarityMatrix; // matrix desctribing if 2 agents are link
 				clasters.add(tmpAgentListToCheck.size());
 			}
 		}
+		//System.out.println("Maks klaster: " + Collections.max(clasters));
 		return clasters;
+		
 	}
-	/*// main for testing network generator
 	public static void main(String[] args){
 		System.out.println("Uruchomiony");
 		NetworkGenerator netGen = new NetworkGenerator(15, 0.005); // density must be close to 0 or whole network will be fully connected;
@@ -83,6 +80,5 @@ private boolean[][] similarityMatrix; // matrix desctribing if 2 agents are link
 			System.out.println(clast);
 		}
 	}
-	*/
 }
 	

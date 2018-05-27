@@ -17,51 +17,70 @@ private ArrayList<Integer> clasters;
 		
 	}
 	
-	public ArrayList<Integer> simulateMarket(int numberOfJumps){
+	public ArrayList<Integer> simulateMarket(int numberOfJumps, int initMarketChange, double offSetValue){
 		ArrayList<Integer> marketChange = new ArrayList<Integer>();
+		double positiveOffset = 0;
+		double negativeOffset = 0;
 		int oneJumpMarketChange;
+		double sumOfClasts = 0;
+		for(Integer clast: clasters){
+			sumOfClasts += clast;
+		}
+		oneJumpMarketChange = initMarketChange;
 		for(int ii = 0; ii < numberOfJumps; ii++){
-			oneJumpMarketChange = 0;
 			for(Integer clast: clasters){
 				double rand = Math.random();
-				if(rand <= actionProbability){
+				if(rand <= actionProbability + positiveOffset){
 					oneJumpMarketChange += clast;
 				}
-				else if(rand > actionProbability && rand <= 2*actionProbability){
+				else if(rand > actionProbability + positiveOffset && rand <= (2*actionProbability) + negativeOffset){
 					oneJumpMarketChange -= clast;
 				}
 				else{
 					// do nothing, no market change, no buying, no selling
 				}
 			}
+			if(oneJumpMarketChange > 0){
+				positiveOffset += offSetValue * ((double)oneJumpMarketChange / sumOfClasts);
+				//negativeOffset -= offSetValue * ((double)oneJumpMarketChange / sumOfClasts);
+			}
+			else if(oneJumpMarketChange < 0){
+				//positiveOffset += offSetValue * ((double)oneJumpMarketChange / sumOfClasts);
+				negativeOffset -= offSetValue * ((double)oneJumpMarketChange / sumOfClasts);
+			}
 			marketChange.add(oneJumpMarketChange);
+			oneJumpMarketChange = 0;
 		}
+		System.out.println("Positive: " + positiveOffset + " Negative: " + negativeOffset);
 		return marketChange;
 	}
 	
-	public static void main(String[] args){
-		NetworkGenerator netGen = new NetworkGenerator(10000, 0.5); // density must be close to 0 or whole network will be fully connected
-		netGen.GenerateLinks();
-		for(int i = 0; i < 10; i ++){
-			String path = "output"+(i+1)+".txt";
-			ArrayList<Integer> clasters = netGen.getClasters();
-			MarketSimulator marSim = new MarketSimulator(0.024*(i+1), clasters);
-			ArrayList<Integer> marChange = marSim.simulateMarket(1000);
-			FileWriter writer;
-			try {
+	public static void main(String[] args) throws IOException{
+		double[] probs = {0.001, 0.005, 0.01, 0.05, 0.1, 0.2, 0.5};
+		double[] constC = {0.7, 0.8, 0.9, 0.94, 0.97, 0.99};
+		for(int ww = 4; ww < 5; ww++){
+			for(int zz = 0; zz < 7; zz++){
+				ArrayList<Integer> writingList = new ArrayList<Integer>();
+				for(int ii = 0; ii < 100; ii++){
+					NetworkGenerator netGen = new NetworkGenerator(1000, constC[ww]);
+					netGen.GenerateLinks();
+					ArrayList<Integer> clasters = netGen.getClasters();
+					MarketSimulator marSim = new MarketSimulator(probs[zz], clasters);
+					ArrayList<Integer> marChange = marSim.simulateMarket(1000, 0, 0.003);
+					for(Integer inti : marChange){
+						writingList.add(inti);
+					}
+				}
+				String path = "c"+constC[ww]+"p"+probs[zz]+".txt";
+				FileWriter writer;
 				writer = new FileWriter(path);
-				for(Integer inti : marChange){
-					writer.write(inti.toString() + "\n");
+				for(Integer asd : writingList){
+					writer.write( asd + "\n");
 				}
 				writer.close();
-			} catch (IOException e) {
-				System.out.println("Exception error");
-				e.printStackTrace();
+				System.out.println("file: " + path + " .Done");
 			}
 		}
-		
-		
-		System.out.println("done");
 	}
 
 }
